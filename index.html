@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italian Restaurant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Italian Restaurant</h1>
+        <nav>
+            <ul>
+                <li><a href="#menu">Menu</a></li>
+               
+            </ul>
+        </nav>
+        <!-- Search Bar -->
+        <label for="search">Search:</label>
+<input type="text" id="search" placeholder="Search menu...">
+
+    </header>
+    <main>
+        <section id="menu">
+            <h2>Our Menu</h2>
+            <!-- Menu items will be dynamically added here -->
+        </section>
+        <section id="cart">
+            <h2>Your Cart</h2>
+            <div id="shopping-cart">
+                <div class="txt-heading">
+                    <h1>Shopping cart</h1>
+                </div>
+                <a onClick="emptyCart()" id="btnEmpty">Empty Cart</a>
+                <table class="tbl-cart" cellpadding="10" cellspacing="1">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th class='text-right' width="10%">Unit Price</th>
+                            <th class='text-right' width="5%">Quantity</th>
+                            <th class='text-right' width="10%">Sub Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableBody">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="text-right">Total:</td>
+                            <td id="itemCount" class="text-right" colspan="2"></td>
+                            <td id="totalAmount" class="text-right"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Italian Restaurant. All rights reserved.</p>
+    </footer>
+   
+</body>
+</html>
+<style>
+    /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+  body {
+ background-color: #FFFFFF; /* Ensure sufficient contrast with text color */
+ color: #000000; /* Ensure sufficient contrast with background color */
+}
+
+h1 {
+ color: #000000; /* Adjusted color to meet contrast ratio */
+ background-color: #FFFFFF; /* Adjusted background color to meet contrast ratio */
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+    /* Updated styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #8CB369; /* Green background */
+    color: #FFFFFF; /* White text */
+}
+
+header {
+    background-color: #E57A44; /* Orange header */
+    color: #FFFFFF;
+    padding: 20px;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+footer {
+    background-color: #E57A44; /* Orange footer */
+    color: #FFFFFF;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Additional styles for the cart and menu items */
+.tbl-cart {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tbl-cart th, .tbl-cart td {
+    border: 1px solid #FFFFFF;
+    padding: 10px;
+}
+
+.tbl-cart tfoot {
+    background-color: #E57A44; /* Orange footer in the cart */
+}
+
+.btn-add-to-cart {
+    background-color: #FFFFFF; /* White button */
+    color: #E57A44; /* Orange text */
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+
+</style>
+<script>
+    // script.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Sample menu items
+    const menuItems = [
+        { name: 'Pizza Margherita', price: 10 },
+        { name: 'Spaghetti Carbonara', price: 12 },
+        { name: 'Gelato', price: 5 }
+    ];
+
+    const menuSection = document.getElementById('menu');
+    menuItems.forEach(item => {
+        const menuItem = document.createElement('div');
+        menuItem.innerHTML = `<h3>${item.name}</h3><p>Price: $${item.price}</p><button onclick="addToCart('${item.name}', ${item.price})">Add to Cart</button>`;
+        menuSection.appendChild(menuItem);
+    });
+
+    function addToCart(name, price) {
+        // Add item to cart using sessionStorage
+        let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+        cart.push({ name, price });
+        sessionStorage.setItem('cart', JSON.stringify(cart));
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+        const cartTableBody = document.getElementById('cartTableBody');
+        cartTableBody.innerHTML = '';
+        let total = 0;
+        cart.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${item.name}</td><td class='text-right'>$${item.price}</td><td class='text-right'>1</td><td class='text-right'>$${item.price}</td>`;
+            cartTableBody.appendChild(row);
+            total += item.price;
+        });
+        document.getElementById('itemCount').textContent = cart.length;
+        document.getElementById('totalAmount').textContent = `$${total}`;
+    }
+
+    function emptyCart() {
+        sessionStorage.removeItem('cart');
+        updateCartUI();
+    }
+
+    // Checkout functionality
+    document.getElementById('btnEmpty').addEventListener('click', function() {
+        console.log('Checking out...');
+        console.log(JSON.parse(sessionStorage.getItem('cart')));
+        // Here you would typically integrate with a payment gateway
+    });
+
+    // Update cart UI on page load
+    updateCartUI();
+
+    // Search functionality
+    document.getElementById('search').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const menuItems = document.querySelectorAll('#menu div');
+        menuItems.forEach(item => {
+            const itemName = item.querySelector('h3').textContent.toLowerCase();
+            if (itemName.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+});
+    // Example of a corrected addToCart function
+function addToCart(name, price) {
+    // Assuming 'cart' is an array of cart items
+    let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+    cart.push({ name, price });
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+    updateCartUI(); // Update the UI to reflect the new cart state
+}
+
+
+</script>
